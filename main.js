@@ -12,13 +12,14 @@ import uranustext from "./textures/uranus.png"
 import neptunetext from "./textures/neptune.png"
 import plutotext from "./textures/pluto.png"
 import saturnringtext from "./textures/saturn_ring.png"
+import planets from "./datasets/planets.json"
 
 //the canvas and the renderer
 const canvas = document.querySelector("#solar")
 const renderer = new THREE.WebGLRenderer({antialias:true, canvas})
 
 //this is the camera setup, i am using a Perspective Camera
-const camera = new THREE.PerspectiveCamera(70,window.innerWidth/window.innerHeight, 0.2, 1000);
+const camera = new THREE.PerspectiveCamera(100,window.innerWidth/window.innerHeight, 0.2, 1000);
 camera.position.z = 4
 
 //the scene and the loader
@@ -40,6 +41,8 @@ const Sunmaterial = new THREE.MeshBasicMaterial( {map: sunTexture,} );
 const Sun = new THREE.Mesh( Sungeometry, Sunmaterial ); scene.add( Sun );
 scene.add(Sun)
 
+
+//this is the function that makes a new planet and adds it to the orbit
 function new_planet(size,texture,position, ring){
     const orbitgeo = new THREE.RingGeometry(
         position, position+0.1, 35
@@ -80,19 +83,9 @@ function new_planet(size,texture,position, ring){
 
 }
 
-// const mercLoader= new THREE.TextureLoader();
-// const mercTexture = mercLoader.load(mercurytext)
-// mercTexture.colorSpace = THREE.SRGBColorSpace; 
 
-// const Mercgeometry = new THREE.SphereGeometry( 4, 30, 30 );
-// const MercMat = new THREE.MeshBasicMaterial({map:mercTexture}) 
-// const Mercury = new THREE.Mesh(Mercgeometry, MercMat);
-// const MercObj = new THREE.Object3D();
-// Mercury.position.x = 28;
+//the planets, still need to add uranus's rings
 
-
-// MercObj.add(Mercury);
-// scene.add(MercObj)
 
 const mercury = new_planet(4, mercurytext,28);
 const venus= new_planet(4, venustext,40)
@@ -140,12 +133,13 @@ function render(time){
 
 
     renderer.render(scene, camera);
-   
     requestAnimationFrame(render);
   }
+
 requestAnimationFrame(render);
 
 
+//I am pretty sure that there is a better way to add the stars
 function addStar(){
     const geometry = new THREE.SphereGeometry(0.25, 24, 24);
     const material = new THREE.MeshStandardMaterial({color:0xffffff})
@@ -157,9 +151,12 @@ function addStar(){
   }
   
   Array(200).fill().forEach(addStar)
+
+
 //for controlling the orbit
 const controls = new OrbitControls(camera, renderer.domElement);
 
+//for the light that is emitted from the sun
 const pointLight = new THREE.PointLight(0xFFFFFF, 20000, 3000);
 scene.add(pointLight);
 
